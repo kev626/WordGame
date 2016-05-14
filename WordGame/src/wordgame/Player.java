@@ -15,6 +15,12 @@ public class Player {
     private String userName = "";
     private int score = 0;
     
+    public Player(long _userID, String _userName, int _score) {
+        userID = _userID;
+        userName = _userName;
+        score = _score;
+    }
+    
     public void setUserID(long _userID) {
         userID = _userID;
     }
