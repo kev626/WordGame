@@ -6,17 +6,35 @@
 
 package wordgame;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import twitter4j.Twitter;
+
 /**
  *
  * @author Kevin
  */
 public class WordGame {
-
+    
+    public static Twitter t;
+    
+    public static String dir = "C:/WordGame/";    
     /**
-     * @param args the command line arguments
+     * @param args $directory $oauth
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) throws IOException {
+        String path = "";
+        if (args.length >= 1) {
+            dir = args[0];
+        }
+        if (args.length >= 2) {
+            path = dir + args[1];
+        }
+        initGame(path);
+    }
+    
+    public static void initGame (String file) throws FileNotFoundException {
+        
     }
     
 }
