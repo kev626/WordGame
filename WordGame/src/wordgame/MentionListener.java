@@ -11,6 +11,8 @@ import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.StatusUpdate;
+import twitter4j.TwitterException;
 
 /**
  *
@@ -20,7 +22,32 @@ class MentionListener implements StatusListener {
 
     @Override
     public void onStatus(Status status) {
-        
+        String userName = status.getUser().getScreenName();
+        long id = status.getUser().getId();
+        Player player = new Player(id, userName, 0);
+        if (!WordGame.players.contains(player)){
+            WordGame.players.add(player);
+        }
+        System.out.println(userName + ": " + status.getText()); //print what the user tweeted us
+        String[] inp = status.getText().split(" "); //split the text into the user's tag and their word
+        try {
+            if (status.getUser().getId() == 3939785352L) { //Is it our tweet?
+                    return;
+            }
+            String word = inp[1].toLowerCase();
+            if (WordGame.possibleWords.contains(word)) { //word was not found
+                String tweet = "@" + userName + " your word was invalid or already found! Please try again!";
+                WordGame.announce(tweet);
+                return;
+            }
+            
+            //their word was valid and wasn't already found
+            String tweet = "@" + userName + " has found the word: " + word + "! They have earned " + word.length() + " points!";
+            WordGame.possibleWords.remove(word);
+            WordGame.announce(tweet);
+        } catch (TwitterException e) {
+            
+        }
     }
     
     

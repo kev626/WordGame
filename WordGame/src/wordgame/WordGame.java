@@ -16,7 +16,9 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 import twitter4j.FilterQuery;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
@@ -33,6 +35,7 @@ public class WordGame {
     public static String dir = "C:/WordGame/";    
     
     static ArrayList<String> possibleWords = new ArrayList<String>();
+    static ArrayList<Player> players = new ArrayList<Player>();
     /**
      * @param args $directory $oauth $wordlist
      */
@@ -66,7 +69,7 @@ public class WordGame {
         twitterStream.filter(filterQuery);
     }
     
-    public static void beginGame(String wordlist) throws InterruptedException, FileNotFoundException {
+    public static void beginGame(String wordlist) throws InterruptedException, FileNotFoundException, TwitterException {
         while (true) { //eternal game loop
             String letters = getString();
             possibleWords = findWords(letters, wordlist);
@@ -86,8 +89,10 @@ public class WordGame {
         return s;
     }
     
-    public static void announce(String str) { //TODO: later will announce to twitter, for now announces to System.out.println();
+    public static void announce(String str) throws TwitterException { //TODO: later will announce to twitter, for now announces to System.out.println();
         System.out.println(str);
+        StatusUpdate rt = new StatusUpdate(str);
+        WordGame.t.updateStatus(rt);
     }
     
     public static ArrayList<String> findWords(String letters, String wordListPath) throws FileNotFoundException {
@@ -95,7 +100,7 @@ public class WordGame {
         Scanner s = new Scanner(new File(wordListPath));
         String line = null;
         try {
-            while ((line = s.nextLine()) != null) {
+            while ((line = s.nextLine().toLowerCase()) != null) {
                 if (containsWord(letters, line) && line.length() >= 3) {
                     list.add(line);
                 }
