@@ -9,6 +9,11 @@ package wordgame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 import twitter4j.FilterQuery;
 import twitter4j.Twitter;
@@ -26,10 +31,12 @@ public class WordGame {
     public static Twitter t;
     
     public static String dir = "C:/WordGame/";    
+    
+    static ArrayList<String> possibleWords = new ArrayList<String>();
     /**
-     * @param args $directory $oauth
+     * @param args $directory $oauth $wordlist
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         String path = "";
         if (args.length >= 1) {
             dir = args[0];
@@ -38,6 +45,7 @@ public class WordGame {
             path = dir + args[1];
         }
         initGame(path);
+        beginGame(dir + args[2]);
     }
     
     public static void initGame (String file) throws FileNotFoundException {
@@ -58,4 +66,55 @@ public class WordGame {
         twitterStream.filter(filterQuery);
     }
     
+    public static void beginGame(String wordlist) throws InterruptedException, FileNotFoundException {
+        while (true) { //eternal game loop
+            String letters = getString();
+            possibleWords = findWords(letters, wordlist);
+            announce("Game starting! Letters: " + letters);
+            Thread.sleep(3600000); //one hour
+        }
+    }
+    
+    public static String getString() {
+        String alphabet= "aaabcdeeefghiiijklmnooopqrsttuuvwxyz";
+        String s = "";
+        Random random = new Random();
+        for (int i = 0; i < 12; i++) {
+            char c = alphabet.charAt(random.nextInt(36));
+            s+=c;
+        }
+        return s;
+    }
+    
+    public static void announce(String str) { //TODO: later will announce to twitter, for now announces to System.out.println();
+        System.out.println(str);
+    }
+    
+    public static ArrayList<String> findWords(String letters, String wordListPath) throws FileNotFoundException {
+        ArrayList<String> list = new ArrayList<String>();
+        Scanner s = new Scanner(new File(wordListPath));
+        String line = null;
+        try {
+            while ((line = s.nextLine()) != null) {
+                if (containsWord(letters, line) && line.length() >= 3) {
+                    list.add(line);
+                }
+            }
+        } catch (NoSuchElementException e) {
+            
+        }
+        return list;
+    }
+    static boolean containsWord(String s, String w) {
+        List<Character> list = new LinkedList<Character>();
+        for (char c : s.toCharArray()) {
+            list.add(c);
+        }
+        for (Character c : w.toCharArray()) {
+            if (!list.remove(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
