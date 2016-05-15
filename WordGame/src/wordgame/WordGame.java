@@ -75,6 +75,8 @@ public class WordGame {
             possibleWords = findWords(letters, wordlist);
             announce("Game starting! Letters: " + letters);
             Thread.sleep(3600000); //one hour
+            //reset game and prepare for next game
+            resetGame();
         }
     }
     
@@ -121,5 +123,9 @@ public class WordGame {
             }
         }
         return true;
+    }
+    public static void resetGame() {
+        players = new ArrayList<Player>(); //remove all players from database
+        possibleWords = new ArrayList<String>(); //remove all remaining words
     }
 }
