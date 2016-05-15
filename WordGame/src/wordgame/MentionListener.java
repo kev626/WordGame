@@ -38,6 +38,7 @@ class MentionListener implements StatusListener {
             if (inp[1].equals("score")) {
                 int index = WordGame.playerIDs.indexOf(player.getUserID()); //find index of user's ID
                 String tweet = "@" + userName + "'s score is: " + WordGame.players.get(index).getScore() + "!";
+                return;
             }
             String word = inp[1].toLowerCase(); //normalize the word
             if (!WordGame.possibleWords.contains(word)) { //word was not found
