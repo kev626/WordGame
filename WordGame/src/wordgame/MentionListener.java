@@ -32,11 +32,15 @@ class MentionListener implements StatusListener {
         System.out.println(userName + ": " + status.getText()); //print what the user tweeted us
         String[] inp = status.getText().split(" "); //split the text into the user's tag and their word
         try {
-            if (status.getUser().getId() == 3939785352L) { //Is it our tweet?
+            if (status.getUser().getId() == 731852008030916608L) { //Is it our tweet?
                     return; //exit, as we do not want to be parsing our own tweets!
             }
+            if (inp[1].equals("score")) {
+                int index = WordGame.playerIDs.indexOf(player.getUserID()); //find index of user's ID
+                String tweet = "@" + userName + "'s score is: " + WordGame.players.get(index).getScore() + "!";
+            }
             String word = inp[1].toLowerCase(); //normalize the word
-            if (WordGame.possibleWords.contains(word)) { //word was not found
+            if (!WordGame.possibleWords.contains(word)) { //word was not found
                 String tweet = "@" + userName + " your word was invalid or already found! Please try again!";
                 WordGame.announce(tweet);
                 return;

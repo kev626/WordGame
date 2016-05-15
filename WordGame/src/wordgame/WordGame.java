@@ -65,7 +65,7 @@ public class WordGame {
         TwitterStreamFactory twitterStreamFactory = new TwitterStreamFactory(t.getConfiguration());
         TwitterStream twitterStream = twitterStreamFactory.getInstance();
         FilterQuery filterQuery = new FilterQuery();
-        filterQuery.follow(new long[]{3939785352L}); //Track our tweets
+        filterQuery.follow(new long[]{731852008030916608L}); //Track our tweets
         twitterStream.addListener(new MentionListener()); //Set the listener to our MentionListener class
         twitterStream.filter(filterQuery); //begin listening
     }
@@ -106,6 +106,7 @@ public class WordGame {
             while ((line = s.nextLine().toLowerCase()) != null) {
                 if (containsWord(letters, line) && line.length() >= 3) {
                     list.add(line);
+                    System.out.println(line);
                 }
             }
         } catch (NoSuchElementException e) {
