@@ -53,9 +53,9 @@ public class WordGame {
     }
     
     public static void initGame (String file) throws FileNotFoundException {
-        Scanner s = new Scanner(new File(file));
+        Scanner s = new Scanner(new File(file)); //open the file
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
+        cb.setDebugEnabled(true) //populate the twitter details with the proper API informatin
                 .setOAuthConsumerKey(s.nextLine())
                 .setOAuthConsumerSecret(s.nextLine())
                 .setOAuthAccessToken(s.nextLine())
@@ -65,16 +65,16 @@ public class WordGame {
         TwitterStreamFactory twitterStreamFactory = new TwitterStreamFactory(t.getConfiguration());
         TwitterStream twitterStream = twitterStreamFactory.getInstance();
         FilterQuery filterQuery = new FilterQuery();
-        filterQuery.follow(new long[]{3939785352L});
-        twitterStream.addListener(new MentionListener());
-        twitterStream.filter(filterQuery);
+        filterQuery.follow(new long[]{3939785352L}); //Track our tweets
+        twitterStream.addListener(new MentionListener()); //Set the listener to our MentionListener class
+        twitterStream.filter(filterQuery); //begin listening
     }
     
     public static void beginGame(String wordlist) throws InterruptedException, FileNotFoundException, TwitterException {
         while (true) { //eternal game loop
             String letters = getString();
-            possibleWords = findWords(letters, wordlist);
-            announce("Game starting! Letters: " + letters);
+            possibleWords = findWords(letters, wordlist); //populate our word database
+            announce("Game starting! Letters: " + letters); //announce the challenge to twitter
             Thread.sleep(3600000); //one hour
             //reset game and prepare for next game
             resetGame();
@@ -82,7 +82,7 @@ public class WordGame {
     }
     
     public static String getString() {
-        String alphabet= "aaabcdeeefghiiijklmnooopqrsttuuvwxyz";
+        String alphabet= "aaabcdeeefghiiijklmnooopqrsttuuvwxyz"; //alphabet with increased odds for vowles
         String s = "";
         Random random = new Random();
         for (int i = 0; i < 12; i++) {
@@ -92,7 +92,7 @@ public class WordGame {
         return s;
     }
     
-    public static void announce(String str) throws TwitterException { //TODO: later will announce to twitter, for now announces to System.out.println();
+    public static void announce(String str) throws TwitterException {
         System.out.println(str);
         StatusUpdate rt = new StatusUpdate(str);
         WordGame.t.updateStatus(rt);
