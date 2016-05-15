@@ -36,6 +36,7 @@ public class WordGame {
     
     static ArrayList<String> possibleWords = new ArrayList<String>();
     static ArrayList<Player> players = new ArrayList<Player>();
+    static ArrayList<Long> playerIDs = new ArrayList<Long>();
     /**
      * @param args $directory $oauth $wordlist
      */

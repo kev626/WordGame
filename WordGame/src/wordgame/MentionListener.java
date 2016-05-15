@@ -25,8 +25,9 @@ class MentionListener implements StatusListener {
         String userName = status.getUser().getScreenName();
         long id = status.getUser().getId();
         Player player = new Player(id, userName, 0);
-        if (!WordGame.players.contains(player)){
+        if (!WordGame.playerIDs.contains(player.getUserID())){
             WordGame.players.add(player);
+            WordGame.playerIDs.add(player.getUserID());
         }
         System.out.println(userName + ": " + status.getText()); //print what the user tweeted us
         String[] inp = status.getText().split(" "); //split the text into the user's tag and their word
@@ -42,7 +43,9 @@ class MentionListener implements StatusListener {
             }
             
             //their word was valid and wasn't already found
-            String tweet = "@" + userName + " has found the word: " + word + "! They have earned " + word.length() + " points!";
+            int index = WordGame.playerIDs.indexOf(player.getUserID()); //find index of user's ID
+            WordGame.players.get(index).setScore(WordGame.players.get(index).getScore()+word.length()); //increase the user's score
+            String tweet = "@" + userName + " found " + word.toUpperCase() + "! They have earned " + word.length() + " points, bringing them to a total of " + WordGame.players.get(index).getScore() + " points!";
             WordGame.possibleWords.remove(word);
             WordGame.announce(tweet);
         } catch (TwitterException e) {
