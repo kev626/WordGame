@@ -8,7 +8,9 @@ package wordgame;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +39,8 @@ public class WordGame {
     static ArrayList<String> possibleWords = new ArrayList<String>();
     static ArrayList<Player> players = new ArrayList<Player>();
     static ArrayList<Long> playerIDs = new ArrayList<Long>();
+    
+    public static int gameNumber;
     /**
      * @param args $directory $oauth $wordlist
      */
@@ -71,11 +75,24 @@ public class WordGame {
     }
     
     public static void beginGame(String wordlist) throws InterruptedException, FileNotFoundException, TwitterException {
+        
         while (true) { //eternal game loop
+            gameNumber = getGameCount();
+            try {
+                setGameCount(gameNumber + 1);
+            } catch (Exception e) {  }
+            gameNumber = getGameCount();
             String letters = getString();
             possibleWords = findWords(letters, wordlist); //populate our word database
             announce("Game starting! Letters: " + letters); //announce the challenge to twitter
             Thread.sleep(3600000); //one hour
+            //announce the winner of the match
+            if (players.size() == 0) {
+                announce("Nobody played this match! Play the next one for a chance to win!");
+            } else {
+                Player winner = getWinner();
+                announce("The winner was @" + winner.getUserName() + " with a score of " + winner.getScore() + "! Congratulations! (Game " + gameNumber + ")");
+            }
             //reset game and prepare for next game
             resetGame();
         }
@@ -128,6 +145,30 @@ public class WordGame {
     }
     public static void resetGame() {
         players = new ArrayList<Player>(); //remove all players from database
+        playerIDs = new ArrayList<Long>();
         possibleWords = new ArrayList<String>(); //remove all remaining words
+    }
+    
+    public static Player getWinner() {
+        int maxScore = 0;
+        long maxID = 0;
+        for (Player player : players) {
+            if (player.getScore() >= maxScore) {
+                maxScore = player.getScore();
+                maxID = player.getUserID();
+            }
+	}
+        int index = playerIDs.indexOf(maxID);
+        return players.get(index);
+    }
+
+    public static int getGameCount() throws FileNotFoundException {
+        Scanner s = new Scanner(new File(dir + "games.txt")); //open the file
+        return Integer.parseInt(s.nextLine());
+    }
+    public static void setGameCount(int games) throws FileNotFoundException, IOException {
+        PrintWriter countLogger = new PrintWriter(new FileWriter(dir + "games.txt"));
+        countLogger.println(games);
+        countLogger.close();
     }
 }
