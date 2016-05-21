@@ -84,14 +84,22 @@ public class WordGame {
             gameNumber = getGameCount();
             String letters = getString();
             possibleWords = findWords(letters, wordlist); //populate our word database
-            announce("Game starting! Letters: " + letters); //announce the challenge to twitter
+            try {
+                announce("Game starting! Letters: " + letters); //announce the challenge to twitter
+            } catch (Exception e) {
+                
+            }
             Thread.sleep(3600000); //one hour
             //announce the winner of the match
-            if (players.size() == 0) {
-                announce("Nobody played this match! Play the next one for a chance to win!");
-            } else {
-                Player winner = getWinner();
-                announce("The winner was @" + winner.getUserName() + " with a score of " + winner.getScore() + "! Congratulations! (Game " + gameNumber + ")");
+            try {
+                if (players.size() == 0) {
+                    announce("Nobody played this match! Play the next one for a chance to win!");
+                } else {
+                    Player winner = getWinner();
+                    announce("The winner was @" + winner.getUserName() + " with a score of " + winner.getScore() + "! Congratulations! (Game " + gameNumber + ")");
+                }
+            } catch (Exception e) {
+                
             }
             //reset game and prepare for next game
             resetGame();
@@ -102,7 +110,7 @@ public class WordGame {
         String alphabet= "aaabcdeeefghiiijklmnooopqrsttuuvwxyz"; //alphabet with increased odds for vowles
         String s = "";
         Random random = new Random();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 20; i++) {
             char c = alphabet.charAt(random.nextInt(36));
             s+=c;
         }
